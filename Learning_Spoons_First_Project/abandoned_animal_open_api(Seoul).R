@@ -35,13 +35,13 @@ urlist <- list()
 
 cnt <- 0
 
-#for문을 이용하여 urlist에 xml 삽입
+#for문을 이용하여 urlist에 xml 담기
 for(i in 1:length(orgcd)){
   for (j in 1:length(upkind)){
     #cnt를 이용하여 인덱스 설정
     cnt = cnt + 1 
     #xml을 urlist에 각 인덱스마다 복사
-    urlist[cnt] <- paste0('http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?','bgnde=',bgnde,
+    urlist[cnt] <- paste0(url,'bgnde=',bgnde,
                           '&upkind=', upkind[j],
                           '&upr_cd=', uprcd,
                           '&org_cd=',  orgcd[i],
@@ -61,13 +61,13 @@ for(i in 1:length(urlist)){
   rootnode[[i]] <- xmlRoot(raw.data[[i]])
 }
 
-#접수일, 품종, 발견장소,관할기관 데이터를 담기 위해 빈 벡터 생성
+#접수일, 품종, 발견장소,공고번호 데이터를 담기 위해 빈 벡터 생성
 a <- c()
 b <- c()
 c <- c()
 d <- c()
 
-#벡터에 접수일, 품종, 발견장소, 관할기관 삽입
+#벡터에 접수일, 품종, 발견장소, 공고번호 삽입
 #union_all을 하지 않으면 전에 삽입했던 값이 사리지고 union을사용하면 중복된 값이 삭제 됨
 for(i in 1: length(rootnode)){
    a <- union_all(a,xpathSApply(rootnode[[i]],"//happenDt",xmlValue))
@@ -82,10 +82,10 @@ df <- data.frame(접수일= a,
                     품종=b,
                     발견장소=c,
                     관활기간=d)
-#생성된 데이터 프리엠 확인
 view(df)
 
 
+view(df$발견장소) 
 
 #CSV파일로 export
 write.csv(df,'C:\\Users\\LG\\Documents\\Basic_R_Learning_Spoons\\project\\csv\\abandoned_animal.csv',row.names = FALSE)
